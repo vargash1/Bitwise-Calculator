@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-03-25 10:34:28
+# @Last Modified time: 2015-03-25 17:36:28
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -97,7 +97,6 @@ class BoolCalc
             1 SHL 2
                 Displays 1 Shift Left 2
         Please Note that the order in which you enter the arguments
-        as well as case sensitivity do not matter!
         as well as case sensitivity do not matter!
         """
         exit
