@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-03-26 10:46:09
+# @Last Modified time: 2015-03-26 10:59:02
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -41,14 +41,8 @@ class BoolCalc
         if (@operation == nil)
             abort ("ERROR, EXPECTED AN OPERATION".red)
         end
-        if (@operation != "NOT")
-            if (@y == nil)
-                abort("ERROR, MISSING NUMBER(s)".red)
-            end
-        else
-            if (@x == nil)
-               abort("ERROR, MISSING NUMBER(s)".red)
-            end 
+        if ((@operation != "NOT" && y == nil) || @x == nil)
+            abort("ERROR, MISSING NUMBER(s)".red)
         end
     end   
     def parse_args()
