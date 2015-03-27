@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-03-26 10:59:02
+# @Last Modified time: 2015-03-27 10:27:12
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -14,13 +14,13 @@ class BoolCalc
         print_nice_binary(num)
     end
     def execute()
-        puts "\t--------------------X------------------".yellow
+        puts "\t-----------------X---------------------".yellow
         print_all_radix(@x)
         if (@operation != 'NOT')
-            puts "\t--------------------Y------------------".yellow
+            puts "\t-----------------Y---------------------".yellow
             print_all_radix(@y)
         end
-        puts "\t-------------------#{@operation}-----------------".yellow
+        puts "\t-----------------#{@operation}-------------------".yellow
         case 
         when (@operation == 'AND')
             final_result = @x & @y
@@ -35,13 +35,14 @@ class BoolCalc
         when (@operation == 'SHL')
             final_result = @x << @y
         end
+        puts "\n\t----------------Result-----------------".yellow
         print_all_radix(final_result)   
     end
     def check_for_errors()
         if (@operation == nil)
             abort ("ERROR, EXPECTED AN OPERATION".red)
         end
-        if ((@operation != "NOT" && y == nil) || @x == nil)
+        if ((@operation != "NOT" && @y == nil) || @x == nil)
             abort("ERROR, MISSING NUMBER(s)".red)
         end
     end   
