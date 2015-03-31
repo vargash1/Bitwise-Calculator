@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-03-27 10:27:12
+# @Last Modified time: 2015-03-31 10:27:27
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -34,6 +34,8 @@ class BoolCalc
             final_result = @x >> @y
         when (@operation == 'SHL')
             final_result = @x << @y
+        when(@operation == "RAD")
+            print_all_radix(@x)
         end
         puts "\n\t----------------Result-----------------".yellow
         print_all_radix(final_result)   
@@ -47,7 +49,7 @@ class BoolCalc
         end
     end   
     def parse_args()
-        ops = ['NOT','SHR','SHL','AND','OR','XOR']
+        ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD']
         i = 0
         if (ARGV.length == 0 || (ARGV[0].upcase) == "-H")
             print_help()
