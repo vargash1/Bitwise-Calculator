@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-03-31 10:27:27
+# @Last Modified time: 2015-03-31 10:40:19
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -16,7 +16,7 @@ class BoolCalc
     def execute()
         puts "\t-----------------X---------------------".yellow
         print_all_radix(@x)
-        if (@operation != 'NOT')
+        if (@y != nil)
             puts "\t-----------------Y---------------------".yellow
             print_all_radix(@y)
         end
@@ -34,8 +34,8 @@ class BoolCalc
             final_result = @x >> @y
         when (@operation == 'SHL')
             final_result = @x << @y
-        when(@operation == "RAD")
-            print_all_radix(@x)
+        when(@operation == 'RAD')
+            return
         end
         puts "\n\t----------------Result-----------------".yellow
         print_all_radix(final_result)   
@@ -45,7 +45,9 @@ class BoolCalc
             abort ("ERROR, EXPECTED AN OPERATION".red)
         end
         if ((@operation != "NOT" && @y == nil) || @x == nil)
-            abort("ERROR, MISSING NUMBER(s)".red)
+            if (@operation != "RAD")
+                abort("ERROR, MISSING NUMBER(s)".red)
+            end
         end
     end   
     def parse_args()
@@ -66,9 +68,8 @@ class BoolCalc
                 end
             #if ARGV[a] is a number, save it.
             when (is_number(a.to_i))
-                if (i == 0)
+                if (@x == nil)
                     @x = a.to_i
-                    i += 1
                 else
                     @y = a.to_i
                 end
@@ -96,6 +97,8 @@ class BoolCalc
                 Displays 1 Shift Right 2
             1 SHL 2
                 Displays 1 Shift Left 2
+            1 RAD
+                Displays 1 in Hex, Binary(32 & 64 Bit Format), and as well as Decimal
         Please Note that the order in which you enter the arguments
         as well as case sensitivity do not matter!
         """
