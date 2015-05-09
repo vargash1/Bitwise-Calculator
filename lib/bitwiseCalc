@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-05-08 08:57:16
+# @Last Modified time: 2015-05-08 20:39:01
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -55,8 +55,8 @@ class BoolCalc
         #not and rad require just one number argument
         #if operation is not either and y is nil then we have a problem...
         #every operation also requires at least 1 number
-        operation_restriction = (@operation != "NOT" || @operation != "RAD")
-        if ((operation_restriction && @y == nil) || @x == nil)
+        operation_restriction = (@operation != "NOT" && @operation != "RAD")
+        if ((operation_restriction && @y == nil) || (@x == nil))
             abort("ERROR, MISSING NUMBER(s)".red)
         end
     end   
@@ -91,7 +91,7 @@ class BoolCalc
     end
     def print_help()
         puts """\tSimply run the Ruby Script with the any of the following as arguements.\n
-        \t./boolCalc.rb <put> <args> <here>\n
+        \tbitwiseCalc <num> <operation> <num>\n
         Results will be output in Hex, Binary, and Decimal
         \tHere are some examples
             1 AND 2
@@ -113,7 +113,7 @@ class BoolCalc
             1 RAD
                 Displays 1 in Hex, Binary(32 & 64 Bit Format), and as well as Decimal
         Please Note that the order in which you enter the arguments
-        as well as case sensitivity do not matter!
+        as well as case sensitivity DO NOT matter!
         """
         exit
     end
