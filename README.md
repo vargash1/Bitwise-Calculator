@@ -1,6 +1,6 @@
 #Bitwise Calculator 
-This is a simple bitwise operation calculator, it might be too simple for certain users. See the examples below to gain a visual on what this project of mine can do, it may be useful to students who need a quick cli tool to do some of the following operations 
-This calculator can peform the following operations:
+This is a simple bitwise operation calculator, it might be too simple for certain users.
+Please see the examples below to gain a visual on what this project of mine can do, it may be useful to students who need a quick cli tool to do some of the following operations 
 * Shift Left
 * Shift Right
 * And 
@@ -9,7 +9,7 @@ This calculator can peform the following operations:
 * Exclusive Or (XOR)
 * Rotate Right
 * Rotate Left
-* RAD - Output number(s) in binary, hex, and decimal form
+* RAD - Outputs number(s) in binary, hex, and decimal form
 
 ###Installation
 ```bash
