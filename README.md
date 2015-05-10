@@ -22,7 +22,7 @@ Please see the examples below to gain a visual on what this project of mine can 
 ###Usage
 ####Note the order and case sensitivity of arguments do not matter
 
-For binary operations, either of the follow would work(without the "<>") 
+For binary operations, either of the following would work(without the "<>") 
 ```bash
 	bitwiseCalc <num1> <operation> <num2>
 	bitwiseCalc <num1> <num2> <operation>
@@ -37,7 +37,7 @@ Results will be output in Decimal, Hexadecimal, and Binary(32 & 64 bit).
 ###Bit Rotation
 Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift)
 ###Examples
-Here are some screengrabs that will provide a visual on what you are to expect.
+Here are some screengrabs that will provide a visual on what you are to expect and some clarification on instructions.
 
 ![alt Text](https://i.imgur.com/tJg2V3H.png "Outputting number in different radixes")
 ![alt Text](https://i.imgur.com/cuLXXZl.png "NOT example")

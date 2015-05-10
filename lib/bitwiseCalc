@@ -54,7 +54,6 @@ class BoolCalc
         end
         #not and rad require just one number argument
         #if operation is not either and y is nil then we have a problem...
-        #every operation also requires at least 1 number
         operation_restriction = (@operation != "NOT" && @operation != "RAD")
         if ((operation_restriction && @y == nil) || (@x == nil))
             abort("ERROR, MISSING NUMBER(s)".red)
@@ -62,7 +61,6 @@ class BoolCalc
     end   
     def parse_args()
         ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD','ROL','ROR']
-        i = 0
         if (ARGV.length == 0 || (ARGV[0].upcase) == "-H")
             print_help()
             exit
@@ -79,8 +77,7 @@ class BoolCalc
             #if ARGV[a] is a number, save it.
             #also keep track of how many numbers we have read
             when (is_number(a.to_i))
-                if (i == 0) ? @x = a.to_i: @y = a.to_i
-                    i += 1 
+                if (@x == nil) ? @x = a.to_i: @y = a.to_i
                 end
             end
         end
