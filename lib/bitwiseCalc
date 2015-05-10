@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-05-08 20:39:01
+# @Last Modified time: 2015-05-10 12:49:45
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
@@ -131,30 +131,27 @@ class BoolCalc
         puts 
     end
     #converts an integer to a binary array
-    #used for rotating
     def int_to_binary_arr()
         @bit64_array_x = []
         63.downto(0) do |n|
             @bit64_array_x << @x[n]
         end
     end
-    #for rotating we only need 64 bit verisions
     def ror()
         for i in 1..@y
             #save least significant bit(end of array) 
             lsb = @bit64_array_x[-1]
-            #since we only want to change all elems besides the last
             for j in 0..(@bit64_array_x.length-2)
                 if j == 0
                     #save next elem(right shift)
-                    #assign current elem to next elem
+                    #assign next element in the array to the current element
                     tmp1 = @bit64_array_x[j+1]
                     @bit64_array_x[j+1] = @bit64_array_x[j]
                 end
-                #save next elem, make next elem previously saved elem
+                #save next element, make next element previously saved elem
                 tmp2 = @bit64_array_x[j+1]
                 @bit64_array_x[j+1] = tmp1
-                tmp1 = tmp2 #refresh var 
+                tmp1 = tmp2  
             end
             #assign least significant bit(end of array) to head of array
             @bit64_array_x[0] = lsb
@@ -166,7 +163,6 @@ class BoolCalc
             msb = @bit64_array_x[0]
             for j in 0..(@bit64_array_x.length-2)
                 #assign next element in array to current element in array
-                #no need to save as no data is lost(msb will save first array elem)
                 @bit64_array_x[j] = @bit64_array_x[j+1]
             end
             #assign most significant bit to tail
