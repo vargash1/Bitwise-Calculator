@@ -4,24 +4,26 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-05-20 21:37:56
+# @Last Modified time: 2015-06-12 18:11:32
 require 'colorize'
 class BoolCalc
     def print_all_radix(num)
-        puts "Decimal:\t\tHex:".yellow
-        puts "\t#{num.to_s(10)}\t\t#{num.to_s(16)}"
-        puts "Binary: ".yellow
+        print "Base 10:\t".yellow; print "#{num.to_s(10)}\n"
+        print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
+        print "Base 8: \t".yellow; print "#{num.to_s(8)}\n"
+        print "Base 2:\n".yellow
         print_nice_binary(num)
     end
     def execute()
-        puts "\t-----------------X---------------------".yellow
+        print "\t---------------------------------------\n".green
         print_all_radix(@x)
         if (@y != nil)
-            puts "\t-----------------Y---------------------".yellow
+            puts "\t---------------------------------------\n".green
             print_all_radix(@y)
         end
-        puts "\t-----------------#{@operation}-------------------".yellow
         case 
+        when(@operation == 'RAD')
+            return
         when (@operation == 'AND')
             final_result = @x & @y
         when (@operation == 'OR')
@@ -42,25 +44,36 @@ class BoolCalc
             int_to_binary_arr()
             ror()
             final_result = (@bit64_array_x.join).to_i(2)
-        when(@operation == 'RAD')
-            return
+        when(@operation == 'MUL')
+            final_result = @x * @y
+        when(@operation == 'ADD')
+            final_result = @x + @y
+        when(@operation == 'DIV')
+            final_result = @x / @y
+        when(@operation == 'SUB')
+            final_result = @x - @y
+        when(@operation == 'MOD')
+            final_result = @x % @y
+        when(@operation == 'POW')
+            final_result = @x ** @y
         end
-        puts "\n\t----------------Result-----------------".yellow
+        puts "\n\t-------------#{@operation} Result-----------------".green
         print_all_radix(final_result)   
     end
     def check_for_errors()
         if (@operation == nil)
-            abort ("ERROR, EXPECTED AN OPERATION".red)
+            abort ("ERROR, Expected Operation".red)
         end
-        #not and rad require just one number argument
-        #if operation is not either and y is nil then we have a problem...
+        #not works with one number argument
+        #rad can read in 2 arguments, but can work with 1
+        #if operation is not either and y is nil then the user forgot an argument
         operation_restriction = (@operation != "NOT" && @operation != "RAD")
-        if ((operation_restriction && @y == nil) || (@x == nil))
-            abort("ERROR, MISSING NUMBER(s)".red)
+        if ((operation_restriction && (@y == nil || @y == 0)) || (@x == nil || @x == 0))
+            abort("ERROR, Missing Numbers for Operation:\t#{@operation}".red)
         end
     end   
     def parse_args()
-        ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD','ROL','ROR']
+        ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD','ROL','ROR','MUL','DIV','ADD','SUB','MOD','POW']
         if (ARGV.length == 0 || (ARGV[0].upcase) == "-H")
             print_help()
             exit
@@ -74,8 +87,19 @@ class BoolCalc
                         @operation = ops_elem
                     end
                 end
-            #if ARGV[a] is a number, save it.
-            #also keep track of how many numbers we have read
+            #hex val was read
+            when(a == a[/0[xX][0-9a-fA-F]+/])
+                if (@x == nil) ? @x = a.to_i(16): @y = a.to_i(16)
+                end
+            #binary val was read
+            when(a == a[/0[bB][0-1]+/])
+                if (@x == nil) ? @x = a.to_i(2): @y = a.to_i(2)
+                end
+            #octal val was read
+            when(a == a[/0[0-7]+/])
+                if (@x == nil) ? @x = a.to_i(8): @y = a.to_i(8)
+                end
+            #decimal val was read
             when (is_number(a.to_i))
                 if (@x == nil) ? @x = a.to_i: @y = a.to_i
                 end
@@ -87,42 +111,61 @@ class BoolCalc
         return is_num
     end
     def print_help()
-        puts """\tSimply run the Ruby Script with the any of the following as arguements.\n
+        puts """
+        Usage(any of the following are acceptable):
+        \tbitwiseCalc <num> <operation>
+        \tbitwiseCalc <num> <num> <operation>
         \tbitwiseCalc <num> <operation> <num>\n
-        Results will be output in Hex, Binary, and Decimal
-        \tHere are some examples
-            1 AND 2
-                Displays 1 & 2 
-            1 OR 2
-                Displays 1 | 2 
-            NOT 1
-                Displays ~1 
-            1 XOR 2
-                Displays 1 XOR 2
-            1 SHR 2
-                Displays 1 Shifted Right by 2
-            1 SHL 2
-                Displays 1 Shifted Left by  2
-            1 ROR 2 
-                Displays 1 Rotated Right 2 Times
-            1 ROL 2
-                Displays 1 Rotated Right 2 Times
-            1 RAD
-                Displays 1 in Hex, Binary(32 & 64 Bit Format), and as well as Decimal
-        Please Note that the order in which you enter the arguments
-        as well as case sensitivity DO NOT matter!
+        
+        Passing <num> in a radix other than base10:
+        <base_2_num>  = 0b[0-1]
+        <base_8_num>  = 0[0-7]
+        <base_16_num> = 0x[0-9a-f]
+        
+            NOT x
+                Displays ~x 
+            x y RAD 
+                Displays x and y in hex, octal, binary, and decimal radixes.
+                1 number argument is sufficient.
+            x AND y
+                Displays x & y  
+            x OR y
+                Displays x | y 
+            x XOR y
+                Displays x XOR y
+            x SHR y
+                Displays x Shifted Right by y
+            x SHL y
+                Displays x Shifted Left by  y
+            x ROR y 
+                Displays x Rotated Right y times 
+            x ROL y
+                Displays x Rotated Left y times 
+            x MUL y
+                Displays x * y 
+            x DIV y
+                Displays x divided by y
+            x ADD y 
+                Displays x + y
+            x SUB y 
+                Displays x - y
+            x MOD y 
+                Displays x modulus y
+            x POW y
+                Displays x to the power of y
         """
         exit
     end
     #outputs num in binary form
+    #adds a space every 4 bits 
     def print_nice_binary(num)
-        puts "\t32 BIT FORMAT".yellow
+        puts "\t32 Bit Format".yellow
         print "\t"
         31.downto(0) do |n| 
             print num[n]
             if (n%4 == 0); print " " end
         end
-        puts "\n\t64 BIT FORMAT".yellow
+        puts "\n\t64 Bit Format".yellow
         print "\t"
         63.downto(0) do |n|
             print num[n]

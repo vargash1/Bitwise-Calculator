@@ -1,45 +1,61 @@
 #Bitwise Calculator 
-This is a simple bitwise operation calculator, it might be too simple for certain users.
-Please see the examples below to gain a visual on what this project of mine can do, it may be useful to students who need a quick cli tool to do some of the following operations 
+This is a simple bitwise operation calculator, as if version 1.0.0 it can peform simple arithmetic as well. Numeric arguments passed can be in binary,octal, decimal, and hexadecimal radix. It might be too simple for certain users. Please see the examples below to gain a visual on what this project of mine can do, it may be useful to users who need a quick cli tool to do some of the following operations.
+
+###Bitwise
 * Shift Left
 * Shift Right
 * And 
 * Not
 * Or
 * Exclusive Or (XOR)
-* Rotate Right
-* Rotate Left
-* RAD - Outputs number(s) in binary, hex, and decimal form
+* Rotate Right (ROR)
+* Rotate Left (ROL)
+
+###Arithmetic
+* Addition 
+* Subtraction
+* Division
+* Multiplication
+* Modulus
 
 ###Installation
 ```bash
 	#you may need to use sudo
 	gem install bitwiseCalc
-	#requirements
-	gem install colorize
+	gem install colorize # dependency
 ```
-
 ###Usage
-####Note the order and case sensitivity of arguments do not matter
+Numbers passed as arguments can be passed in binary, hex, octal, and decimal.
+Note numbers passed incorrectly WILL NOT be used.
+Passing numbers in a radix other than base10:
+*binary number = 0b[0-1]
+*octal number  = 0[0-7]
+*hex number    = 0x[0-9a-f]
 
-For binary operations, either of the following would work(without the "<>") 
+Run the following for output on usage.
 ```bash
-	bitwiseCalc <num1> <operation> <num2>
-	bitwiseCalc <num1> <num2> <operation>
+	bitwiseCalc -h
+```
+General usage.
+```bash
+	bitwiseCalc <num1> <operation> <num2> 
 	bitwiseCalc <operation> <num1> <num2>
-```
-For using unary operations RAD and NOT
-```bash
 	bitwiseCalc <operation> <num>
-	bitwiseCalc RAD <num1> <num2>
 ```
-Results will be output in Decimal, Hexadecimal, and Binary(32 & 64 bit).
+
+Results will be output in Octal, Decimal, Hexadecimal, and Binary(32 & 64 bit).
+
 ###Bit Rotation
 Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift)
+
 ###Examples
 Here are some screengrabs that will provide a visual on what you are to expect and some clarification on instructions.
 
-![alt Text](https://i.imgur.com/tJg2V3H.png "Outputting number in different radixes")
-![alt Text](https://i.imgur.com/cuLXXZl.png "NOT example")
-![alt Text](https://i.imgur.com/P3yF4xm.png "ROL example")
-![alt Text](https://i.imgur.com/QHZZNxc.png "AND example")
+Octal and Decimal Arguments with Or Operation
+![alt Text](https://i.imgur.com/MxWzeR4.png "Octal and Decimal Arguments with the Or operation")
+Hex and Binary Arguments with Shift Left Operation
+![alt Text](https://i.imgur.com/zVQ6hoG.png "Hex and Binary Arguments with Shift Left Operation")
+Binary and Decimal Arguments with Arithmetic Add operation
+![alt Text](https://i.imgur.com/dk7vyVK.png "Binary and Decimal Arguments with Arithmetic Add operation")
+Using RAD operation to output arguments in different radices
+![alt Text](https://i.imgur.com/fyZQGES.png "Using RAD operation to output arguments in different radices")
