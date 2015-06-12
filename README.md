@@ -1,5 +1,5 @@
 #Bitwise Calculator 
-This is a simple bitwise operation calculator, as if version 1.0.0 it can peform simple arithmetic as well. Numeric arguments passed can be in binary,octal, decimal, and hexadecimal radix. It might be too simple for certain users. Please see the examples below to gain a visual on what this project of mine can do, it may be useful to users who need a quick cli tool to do some of the following operations.
+This is a simple bitwise operation calculator, as of version 1.0.0 it can peform simple arithmetic as well. Numeric arguments passed can be in binary,octal, decimal, and hexadecimal radix. It might be too simple for certain users. Please see the examples below to gain a visual on what this project of mine can do, it may be useful to users who need a quick cli tool to do some of the following operations.
 
 ###Bitwise
 * Shift Left
