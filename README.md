@@ -28,9 +28,9 @@ This is a simple bitwise operation calculator, as if version 1.0.0 it can peform
 Numbers passed as arguments can be passed in binary, hex, octal, and decimal.
 Note numbers passed incorrectly WILL NOT be used.
 Passing numbers in a radix other than base10:
-*binary number = 0b[0-1]
-*octal number  = 0[0-7]
-*hex number    = 0x[0-9a-f]
+* binary number = 0b[0-1]
+* octal number  = 0[0-7]
+* hex number    = 0x[0-9a-f]
 
 Run the following for output on usage.
 ```bash
