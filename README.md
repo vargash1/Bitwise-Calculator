@@ -51,11 +51,14 @@ Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is d
 ###Examples
 Here are some screengrabs that will provide a visual on what you are to expect and some clarification on instructions.
 
-Octal and Decimal Arguments with Or Operation
+####Octal and Decimal Arguments with Or Operation 
 ![alt Text](https://i.imgur.com/MxWzeR4.png "Octal and Decimal Arguments with the Or operation")
-Hex and Binary Arguments with Shift Left Operation
+
+####Hex and Binary Arguments with Shift Left Operation 
 ![alt Text](https://i.imgur.com/zVQ6hoG.png "Hex and Binary Arguments with Shift Left Operation")
-Binary and Decimal Arguments with Arithmetic Add operation
+####Binary and Decimal Arguments with Arithmetic Add operation 
+
 ![alt Text](https://i.imgur.com/dk7vyVK.png "Binary and Decimal Arguments with Arithmetic Add operation")
-Using RAD operation to output arguments in different radices
+
+####Using RAD operation to output arguments in different radices 
 ![alt Text](https://i.imgur.com/fyZQGES.png "Using RAD operation to output arguments in different radices")
