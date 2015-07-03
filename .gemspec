@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.name        = 'bitwiseCalc'
-    s.version     = '1.1.1'
-    s.date        = '2015-06-12'
+    s.version     = '1.3.2'
+    s.date        = '2015-07-03'
     s.summary     = "BitWise Calculator"
     s.description = "A simple BitWise Calculator that can peform arithmetic"
     s.authors     = "Hector Vargas"
