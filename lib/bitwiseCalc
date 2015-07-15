@@ -4,9 +4,17 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-06-30 12:22:35
+# @Last Modified time: 2015-07-15 14:19:51
 require 'colorize'
 class BoolCalc
+    def initialize()
+        @x = nil ; @y = nil
+        @ans = nil; @operation = nil
+        # flags
+        @no_color = false
+        @ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD','ROL','ROR','MUL','DIV','ADD','SUB','MOD','POW']
+         
+    end
     def print_all_radix(num)
         print "Base 10:\t".yellow; print "#{num.to_s(10)}\n"
         print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
@@ -15,12 +23,6 @@ class BoolCalc
         print_nice_binary(num)
     end
     def execute()
-        print "\t---------------------------------------\n".green
-        print_all_radix(@x)
-        if (@y != nil)
-            puts "\t---------------------------------------\n".green
-            print_all_radix(@y)
-        end
         case 
         when(@operation == 'RAD')
             return
@@ -57,13 +59,20 @@ class BoolCalc
         when(@operation == 'POW')
             final_result = @x ** @y
         end
+    end
+    def print_results()
+        String.disable_colorization = true if (@no_color)
+        print "\t---------------------------------------\n".green
+        print_all_radix(@x)
+        if (@y != nil)
+            puts "\t---------------------------------------\n".green
+            print_all_radix(@y)
+        end
         puts "\n\t-------------#{@operation} Result-----------------".green
         print_all_radix(final_result)   
     end
     def check_for_errors()
-        if (@operation == nil)
-            abort ("ERROR, Expected Operation".red)
-        end
+        abort ("ERROR, Expected Operation".red) if (@operation.nil?)
         #not operation is unary
         #rad can be either unary or binary
         #following logic avoids running a binary operation when user entered
@@ -73,17 +82,16 @@ class BoolCalc
             abort("ERROR, Missing Numbers for Operation:\t#{@operation}".red)
         end
     end   
-    def parse_args()
-        ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD','ROL','ROR','MUL','DIV','ADD','SUB','MOD','POW']
-        if (ARGV.length == 0 || (ARGV[0].upcase) == "-H")
-            print_help()
-            exit
-        end
-        ARGV.each do |a|
+    def parse_args(arr = nil)
+        usage() if ARGV.empty? 
+        #only parse flags if first arg is not numeric
+        parse_flags if (!is_number(ARGV[0]))
+        arr = ARGV[0] if arr.nil?
+        arr.each do |a|
             case 
             #if ARGV[a] is letters only,check if its a valid operation
             when (a == a[/[a-zA-Z]*/])
-                ops.each do |ops_elem|
+                @ops.each do |ops_elem|
                     if (a.upcase == ops_elem)
                         @operation = ops_elem
                     end
@@ -107,22 +115,32 @@ class BoolCalc
             end
         end
     end
+    def parse_flags()
+        flags = ARGV[0]
+        flags.split("").each do |f|
+            usage() if f == "H" 
+            @no_color = true if f.upcase == "N"
+        end
+    end
     def is_number(num)
         is_num = ((num.to_f.to_s == num.to_s) || (num.to_i.to_s == num.to_s))
         return is_num
     end
-    def print_help()
+    def usage()
         puts """
-        Usage(any of the following are acceptable):
-        \tbitwiseCalc <num> <operation>
-        \tbitwiseCalc <num> <num> <operation>
-        \tbitwiseCalc <num> <operation> <num>\n
+        Usage
+            bitwiseCalc [num] [operation]
+            bitwiseCalc [num] [num] [operation]
+            bitwiseCalc [num] [operation] [num]
+        Flags 
+            -n
+                disables colorized output(enabled by default)
         
         Passing <num> in a radix other than base10:
-        <base_2_num>  = 0b[0-1]
-        <base_8_num>  = 0[0-7]
-        <base_16_num> = 0x[0-9a-f]
-        
+            <base_2_num>  = 0b[0-1]
+            <base_8_num>  = 0[0-7]
+            <base_16_num> = 0x[0-9a-f]
+        Operations
             NOT x
                 Displays ~x 
             x y RAD 
