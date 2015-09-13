@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-07-15 14:19:51
+# @Last Modified time: 2015-09-13 13:35:27
 require 'colorize'
 class BoolCalc
     def initialize()
@@ -27,66 +27,73 @@ class BoolCalc
         when(@operation == 'RAD')
             return
         when (@operation == 'AND')
-            final_result = @x & @y
+            @ans = @x & @y
         when (@operation == 'OR')
-            final_result = @x | @y
+            @ans = @x | @y
         when (@operation == 'XOR')
-            final_result = @x ^ @y 
+            @ans = @x ^ @y 
         when (@operation == 'NOT')
-            final_result = ~@x
+            @ans = ~@x
         when (@operation == 'SHR')
-            final_result = @x >> @y
+            @ans = @x >> @y
         when (@operation == 'SHL')
-            final_result = @x << @y
+            @ans = @x << @y
         when (@operation == 'ROL')
             int_to_binary_arr()
             rol()
-            final_result = (@bit64_array_x.join).to_i(2)
+            @ans = (@bit64_array_x.join).to_i(2)
         when(@operation == 'ROR')
             int_to_binary_arr()
             ror()
-            final_result = (@bit64_array_x.join).to_i(2)
+            @ans = (@bit64_array_x.join).to_i(2)
         when(@operation == 'MUL')
-            final_result = @x * @y
+            @ans = @x * @y
         when(@operation == 'ADD')
-            final_result = @x + @y
+            @ans = @x + @y
         when(@operation == 'DIV')
-            final_result = @x / @y
+            @ans = @x / @y
         when(@operation == 'SUB')
-            final_result = @x - @y
+            @ans = @x - @y
         when(@operation == 'MOD')
-            final_result = @x % @y
+            @ans = @x % @y
         when(@operation == 'POW')
-            final_result = @x ** @y
+            @ans = @x ** @y
         end
     end
     def print_results()
-        String.disable_colorization = true if (@no_color)
         print "\t---------------------------------------\n".green
         print_all_radix(@x)
         if (@y != nil)
             puts "\t---------------------------------------\n".green
             print_all_radix(@y)
         end
-        puts "\n\t-------------#{@operation} Result-----------------".green
-        print_all_radix(final_result)   
+        # rad simply outputs num(s) in multiple radixes
+        if (@operation != "RAD")
+            puts "\n\t-------------#{@operation} Result-----------------".green
+            print_all_radix(@ans)
+        end    
     end
     def check_for_errors()
+        # no operation specified
         abort ("ERROR, Expected Operation".red) if (@operation.nil?)
-        #not operation is unary
-        #rad can be either unary or binary
-        #following logic avoids running a binary operation when user entered
-        #only one number
-        operation_restriction = (@operation != "NOT" && @operation != "RAD")
-        if ((operation_restriction && (@y == nil || @y == 0)) || (@x == nil || @x == 0))
+        
+        # div by zero
+        if ((@operation == "DIV" || @operation == "MOD") && (@y == 0))
+            abort("ERROR, Divide by 0 for Operation:\t#{@operation}".red)
+        end 
+
+        # all other operations require binary input 
+        restriction = (@operation != "NOT" && @operation != "RAD")
+        if restriction && ((@y == nil ) && (@x == nil)) 
             abort("ERROR, Missing Numbers for Operation:\t#{@operation}".red)
         end
     end   
     def parse_args(arr = nil)
+        #exit if no args passed; parse flags only if needed
         usage() if ARGV.empty? 
-        #only parse flags if first arg is not numeric
         parse_flags if (!is_number(ARGV[0]))
-        arr = ARGV[0] if arr.nil?
+        
+        arr = ARGV if arr.nil?
         arr.each do |a|
             case 
             #if ARGV[a] is letters only,check if its a valid operation
@@ -121,6 +128,7 @@ class BoolCalc
             usage() if f == "H" 
             @no_color = true if f.upcase == "N"
         end
+        String.disable_colorization = true if (@no_color)
     end
     def is_number(num)
         is_num = ((num.to_f.to_s == num.to_s) || (num.to_i.to_s == num.to_s))
@@ -249,5 +257,6 @@ def main()
     runtime.parse_args()
     runtime.check_for_errors()
     runtime.execute()
+    runtime.print_results()
 end
 main()  
