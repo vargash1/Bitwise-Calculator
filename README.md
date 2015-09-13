@@ -22,7 +22,6 @@ This is a simple bitwise operation calculator, as of version 1.0.0 it can peform
 ```bash
 	#you may need to use sudo
 	gem install bitwiseCalc
-	gem install colorize # dependency
 ```
 ###Usage
 Numbers passed as arguments can be passed in binary, hex, octal, and decimal.
@@ -32,18 +31,24 @@ Passing numbers in a radix other than base10:
 * octal number  = 0[0-7]
 * hex number    = 0x[0-9a-f]
 
-Run the following for output on usage.
+Note the order in which you enter the number(s) and operation does NOT matter.
+However, if you wish to pass any flags, they MUST be the first argument passed.
+
 ```bash
-	bitwiseCalc -h
-```
-General usage.
-```bash
-	bitwiseCalc <num1> <operation> <num2> 
-	bitwiseCalc <operation> <num1> <num2>
-	bitwiseCalc <operation> <num>
+	#binary input operations
+	bitwiseCalc <flags> <num1> <operation> <num2> 
+	
+	#unary input operations
+	bitwiseCalc <flags> <operation> <num>
+	
+	#Flags 
+            -n
+                disables colorized output(enabled by default)
+            -h
+                outputs usage and exits
 ```
 
-Results will be output in Octal, Decimal, Hexadecimal, and Binary(32 & 64 bit).
+Results will be output in Octal, Decimal, Hexadecimal, and Binary(32, 64, and 128 bit).
 
 ###Bit Rotation
 Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift)

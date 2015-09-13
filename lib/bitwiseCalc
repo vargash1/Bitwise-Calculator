@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-09-13 13:35:27
+# @Last Modified time: 2015-09-13 13:42:24
 require 'colorize'
 class BoolCalc
     def initialize()
@@ -143,11 +143,14 @@ class BoolCalc
         Flags 
             -n
                 disables colorized output(enabled by default)
+            -h
+                outputs usage and exits
         
         Passing <num> in a radix other than base10:
             <base_2_num>  = 0b[0-1]
             <base_8_num>  = 0[0-7]
             <base_16_num> = 0x[0-9a-f]
+        
         Operations
             NOT x
                 Displays ~x 
