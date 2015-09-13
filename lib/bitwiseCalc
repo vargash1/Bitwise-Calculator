@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-09-13 13:42:24
+# @Last Modified time: 2015-09-13 19:36:40
 require 'colorize'
 class BoolCalc
     def initialize()
@@ -116,7 +116,7 @@ class BoolCalc
                 if (@x == nil) ? @x = a.to_i(8): @y = a.to_i(8)
                 end
             #decimal val was read
-            when (is_number(a.to_i))
+            when (is_number(a))
                 if (@x == nil) ? @x = a.to_i: @y = a.to_i
                 end
             end
