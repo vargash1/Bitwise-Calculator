@@ -4,17 +4,19 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last Modified by:   vargash1
-# @Last Modified time: 2015-09-13 19:36:40
+# @Last Modified time: 2015-09-17 20:41:15
 require 'colorize'
 class BoolCalc
     def initialize()
-        @x = nil ; @y = nil
-        @ans = nil; @operation = nil
-        # flags
+        @x = nil; @y = nil; @ans = nil; @operation = nil
+        # Valid Operations 
+        @ops = ['NOT','SHR','SHL','AND','OR','XOR',
+                'RAD','ROL','ROR','MUL','DIV','ADD',
+                'SUB','MOD','POW','NOR','NAND','XNOR']
+        # Flags
         @no_color = false
-        @ops = ['NOT','SHR','SHL','AND','OR','XOR','RAD','ROL','ROR','MUL','DIV','ADD','SUB','MOD','POW']
-         
     end
+    # Outputs num in radixes mentioned in program description.
     def print_all_radix(num)
         print "Base 10:\t".yellow; print "#{num.to_s(10)}\n"
         print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
@@ -22,16 +24,23 @@ class BoolCalc
         print "Base 2:\n".yellow
         print_nice_binary(num)
     end
+    # Executes desired operation.
     def execute()
         case 
         when(@operation == 'RAD')
             return
         when (@operation == 'AND')
             @ans = @x & @y
+        when (@operation == 'NAND')
+            @ans = ~(@x & @y) 
         when (@operation == 'OR')
             @ans = @x | @y
+        when (@operation == 'NOR')
+            @ans = ~(@x | @y)
         when (@operation == 'XOR')
             @ans = @x ^ @y 
+        when (@operation == 'XNOR')
+            @ans = ~(@x ^ @y)
         when (@operation == 'NOT')
             @ans = ~@x
         when (@operation == 'SHR')
@@ -60,10 +69,11 @@ class BoolCalc
             @ans = @x ** @y
         end
     end
+    # Neatly displays results
     def print_results()
         print "\t---------------------------------------\n".green
         print_all_radix(@x)
-        if (@y != nil)
+        if (@y != nil && @operation != "NOT")
             puts "\t---------------------------------------\n".green
             print_all_radix(@y)
         end
@@ -73,27 +83,35 @@ class BoolCalc
             print_all_radix(@ans)
         end    
     end
+    
+    # Detect any errors before operation execution
     def check_for_errors()
-        # no operation specified
-        abort ("ERROR, Expected Operation".red) if (@operation.nil?)
-        
+        # no operation read
+        abort("ERROR, Expected Operation".red) if (@operation.nil?)
+        # at least one number read to continue
+        abort("ERROR, Expected Number(s) for #{@operation}".red) if (@x.nil?)
+
         # div by zero
         if ((@operation == "DIV" || @operation == "MOD") && (@y == 0))
             abort("ERROR, Divide by 0 for Operation:\t#{@operation}".red)
         end 
 
-        # all other operations require binary input 
+        # make sure binary operations have binary input 
         restriction = (@operation != "NOT" && @operation != "RAD")
-        if restriction && ((@y == nil ) && (@x == nil)) 
-            abort("ERROR, Missing Numbers for Operation:\t#{@operation}".red)
+        if restriction && (@y.nil?)  
+            abort("ERROR, Expected Number(s) for Operation:\t#{@operation}".red)
         end
-    end   
+    end 
+    
+    # Use regular expressions to parse arguments passed.
     def parse_args(arr = nil)
         #exit if no args passed; parse flags only if needed
         usage() if ARGV.empty? 
-        parse_flags if (!is_number(ARGV[0]))
+        parse_flags if (ARGV[0][0] == "-")
         
+        # for using in a script
         arr = ARGV if arr.nil?
+        
         arr.each do |a|
             case 
             #if ARGV[a] is letters only,check if its a valid operation
@@ -122,106 +140,126 @@ class BoolCalc
             end
         end
     end
+    # Parses flags, only called if flags passed are detected.
     def parse_flags()
         flags = ARGV[0]
         flags.split("").each do |f|
-            usage() if f == "H" 
+            usage() if f.upcase == "H" 
             @no_color = true if f.upcase == "N"
         end
         String.disable_colorization = true if (@no_color)
     end
+    # Simple way to check if our number is truly a number
     def is_number(num)
         is_num = ((num.to_f.to_s == num.to_s) || (num.to_i.to_s == num.to_s))
         return is_num
     end
     def usage()
         puts """
-        Usage
-            bitwiseCalc [num] [operation]
-            bitwiseCalc [num] [num] [operation]
-            bitwiseCalc [num] [operation] [num]
-        Flags 
+        Description:
+            A simple bitwise calculator that executes the operations noted below.
+            It can accept Octal, Hexadecimal, Decimal, and Binary inputs.
+            It will output in above mentioned radixes, binary output 
+            will have 32,64, and up to 128 bit format. The results are printed to
+            STDOUT.  
+        Usage:
+            Any flags passed MUST come first.
+            Numbers, and operation order DOES NOT MATTER.
+            Binary operations WILL be parsed left to right.
+
+            Unary Operations:
+                bitwiseCalc <flag> <num> <operation>
+            
+            Binary Operations:
+                bitwiseCalc <flag> <num> <operation> <num>
+            
+            Passing a number in a radix other than base10:
+                <base_2_num>  = 0b[0-1]
+                <base_8_num>  = 0[0-7]
+                <base_16_num> = 0x[0-9a-f]
+        Flags: 
             -n
                 disables colorized output(enabled by default)
             -h
                 outputs usage and exits
-        
-        Passing <num> in a radix other than base10:
-            <base_2_num>  = 0b[0-1]
-            <base_8_num>  = 0[0-7]
-            <base_16_num> = 0x[0-9a-f]
-        
-        Operations
-            NOT x
-                Displays ~x 
-            x y RAD 
-                Displays x and y in hex, octal, binary, and decimal radixes.
-                1 number argument is sufficient.
-            x AND y
-                Displays x & y  
-            x OR y
-                Displays x | y 
-            x XOR y
-                Displays x XOR y
-            x SHR y
-                Displays x Shifted Right y times
-            x SHL y
-                Displays x Shifted Left y times
-            x ROR y 
-                Displays x Rotated Right y times 
-            x ROL y
-                Displays x Rotated Left y times 
-            x MUL y
-                Displays x * y 
-            x DIV y
-                Displays x divided by y
-            x ADD y 
-                Displays x + y
-            x SUB y 
-                Displays x - y
-            x MOD y 
-                Displays x modulus y
-            x POW y
-                Displays x to the power of y
-        """
+        Operations:
+            NOT 
+                Bitwise NOT, or complement of input.   
+            RAD    
+                Diplays Input(s) in metioned radixes.   
+            AND              
+                Logical AND. 
+            NAND 
+                Negative AND.   
+            OR 
+                Logical inclusive OR.
+            NOR
+                Negative OR.
+            XOR 
+                Logical exclusive OR. 
+            XNOR
+                Logical complement of XOR. 
+            SHR 
+                Right logical shift. 
+            SHL 
+                Left logical shift.
+            ROR  
+                Right circular rotate.       
+            ROL 
+                Left circular rotate.   
+            MUL 
+                Multiplication.
+            DIV 
+                Division.
+            ADD  
+                Addition.
+            SUB  
+                Subtraction.
+            MOD  
+                Modulus.
+            POW
+                Exponentiation.
+            """
         exit
     end
-    #outputs num in binary form
-    #adds a space every 4 bits 
+    # Outputs number in Binary form for easier reading
+    # Plus it lets user see what is going on.
     def print_nice_binary(num)
         if num <= (2**31)
-            puts "\t32 Bit Format".yellow
+            puts "\t32 Bit Format(MSB First)".yellow
             print "\t"
             31.downto(0) do |n| 
                 print num[n]
                 if (n%4 == 0); print " " end
             end
+            puts
         end
         if num <= (2**63)
-            puts "\n\t64 Bit Format".yellow
+            puts "\n\t64 Bit Format(MSB First)".yellow
             print "\t"
             63.downto(0) do |n|
                 print num[n]
-                if (n%4 == 0); print " " end
+                print " " if (n%4 == 0) 
             end
         else
-            puts "\n\t128 Bit Format".yellow
+            puts "\n\t128 Bit Format(MSB First)".yellow
             print "\t"
             127.downto(0) do |n|
-                if (n == 63); print"\n\t" end
+                print"\n\t" if (n == 63)
                 print num[n]
-                if (n%4 == 0); print " " end
+                print " " if (n%4 == 0)
             end
         end
         puts
     end
-    #converts an integer to a binary array
+    #Converts an integer to a binary array
     def int_to_binary_arr()
         @bit64_array_x = []
         63.downto(0) do |n|
             @bit64_array_x << @x[n]
         end
     end
+    # Rotate right implementation 
     def ror()
         arr_tail = @bit64_array_x.length-2
         for i in 1..@y
@@ -241,6 +279,7 @@ class BoolCalc
             @bit64_array_x[0] = lsb
         end
     end
+    # Rotate left implementation 
     def rol()
         arr_tail = @bit64_array_x.length-2
         for i in 1..@y
