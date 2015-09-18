@@ -1,4 +1,4 @@
-#Bitwise Calculator 
+#bitwiseCalc [![Gem Version](https://badge.fury.io/rb/bitwiseCalc.svg)](http://badge.fury.io/rb/bitwiseCalc)
 This is a simple bitwise operation calculator designed to let the user see what is going on. Numeric arguments passed can be in binary, octal, decimal, and hexadecimal radix. It might be too simple for certain users. Please see the examples below to gain a visual on what this project of mine can do, it may be useful to user's who need a quick cli tool to do some of the following operations. 
 
 ###Bitwise Operations
