@@ -1,5 +1,6 @@
 #bitwiseCalc [![Gem Version](https://badge.fury.io/rb/bitwiseCalc.svg)](http://badge.fury.io/rb/bitwiseCalc)
-This is a simple bitwise operation calculator designed to let the user see what is going on. Numeric arguments passed can be in binary, octal, decimal, and hexadecimal radix. It might be too simple for certain users. Please see the examples below to gain a visual on what this project of mine can do, it may be useful to user's who need a quick cli tool to do some of the following operations. 
+This is a simple bitwise operation calculator designed to let the user see what is going on. Numeric arguments passed can be in binary, octal, decimal, and hexadecimal radix. It might be too simple for certain users, but it might be perfect for students. Please see the examples below to gain a visual on what this project of mine can do. Note this program was intended for CLI use only.
+This project will soon be replaced by a much more organized version, but I didn't want to break anything in the meantime!
 
 ###Bitwise Operations
 * SHL  --- Shift Left
@@ -39,10 +40,6 @@ Passing numbers in a radix other than base10:
 * octal number  = 0[0-7]
 * hex number    = 0x[0-9a-f]
 
-Note the order in which you enter the number(s) and operation does NOT matter.
-However, if you wish to pass any flags, they MUST be the first argument passed.
-Numbers WILL BE parsed in from left to right. 
-
 ```bash
 	#binary input operations
 	bitwiseCalc <flags> <num1> <operation> <num2> 
@@ -51,17 +48,22 @@ Numbers WILL BE parsed in from left to right.
 	bitwiseCalc <flags> <operation> <num>
 	
 	#Flags 
+      		-f
+                disables spacing every 4 bits in binary output 
+            -s
+                disables newline every 64 bits in binary output
             -n
-                disables colorized output(enabled by default)
+                disables colorized output
             -h
                 outputs usage and exits
-
+            -g 
+                outputs base 10 numbers in grouped form
 ```
 
-Results will be output in Octal, Decimal, Hexadecimal, and Binary(32, 64, and 128 bit) MSB first.
+Results will be output in Octal, Decimal, Hexadecimal, and Binary(MSB first).
 
 ###Bit Rotation
-Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift)
+Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift) However, since my program supports up to 256 bit numbers, then it you should carefully use ROL. ROL will rotate these numbers with respect to this. That means that if you ROL 1 by 1 will become 2^255. I will fix this in the next patch but I intend to completely break down this code and start from scratch! 
 
 ###Examples
 Here are some screengrabs that will provide a visual on what you are to expect and some clarification on instructions.

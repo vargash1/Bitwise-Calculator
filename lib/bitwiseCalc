@@ -3,8 +3,8 @@
 # @Name:   Vargas, Hector
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
-# @Last Modified by:   vargash1
-# @Last Modified time: 2015-09-17 20:41:15
+# @Last Modified by:   Hector Vargas
+# @Last Modified time: 2016-01-09 19:20:07
 require 'colorize'
 class BoolCalc
     def initialize()
@@ -13,12 +13,16 @@ class BoolCalc
         @ops = ['NOT','SHR','SHL','AND','OR','XOR',
                 'RAD','ROL','ROR','MUL','DIV','ADD',
                 'SUB','MOD','POW','NOR','NAND','XNOR']
-        # Flags
-        @no_color = false
+        # Option Hash
+        @options = {nocolor:false, grouped: false, bit4: true, bit64: true}
     end
     # Outputs num in radixes mentioned in program description.
     def print_all_radix(num)
-        print "Base 10:\t".yellow; print "#{num.to_s(10)}\n"
+        num_base10 = num.to_s(10)
+        if @options[:grouped]
+            num_base10 = num.to_s(10).reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
+        end
+        print "Base 10:\t".yellow; print "#{num_base10}\n"
         print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
         print "Base 8: \t".yellow; print "#{num.to_s(8)}\n"
         print "Base 2:\n".yellow
@@ -48,13 +52,13 @@ class BoolCalc
         when (@operation == 'SHL')
             @ans = @x << @y
         when (@operation == 'ROL')
-            int_to_binary_arr()
-            rol()
-            @ans = (@bit64_array_x.join).to_i(2)
+            binarr = int_to_binarr(@x)
+            binarr = rol(binarr)
+            @ans = binarr.join.to_i(2)
         when(@operation == 'ROR')
-            int_to_binary_arr()
-            ror()
-            @ans = (@bit64_array_x.join).to_i(2)
+            binarr = int_to_binarr(@x)
+            binarr = ror(binarr)
+            @ans = (binarr.join).to_i(2)
         when(@operation == 'MUL')
             @ans = @x * @y
         when(@operation == 'ADD')
@@ -71,6 +75,8 @@ class BoolCalc
     end
     # Neatly displays results
     def print_results()
+        String.disable_colorization = true if (@options[:nocolor])
+        
         print "\t---------------------------------------\n".green
         print_all_radix(@x)
         if (@y != nil && @operation != "NOT")
@@ -86,35 +92,31 @@ class BoolCalc
     
     # Detect any errors before operation execution
     def check_for_errors()
-        # no operation read
+        # no op read
         abort("ERROR, Expected Operation".red) if (@operation.nil?)
-        # at least one number read to continue
-        abort("ERROR, Expected Number(s) for #{@operation}".red) if (@x.nil?)
-
+        
+        # make sure binary ops have binary input 
+        restriction = ((@operation != "NOT" && @operation != "RAD") &&@y.nil?)
+        # also make sure we have read at least 1 number
+        if restriction || @x.nil?   
+            abort("ERROR, Expected Number(s) for Operation:\t#{@operation}".red)
+        end
+            
         # div by zero
         if ((@operation == "DIV" || @operation == "MOD") && (@y == 0))
             abort("ERROR, Divide by 0 for Operation:\t#{@operation}".red)
         end 
-
-        # make sure binary operations have binary input 
-        restriction = (@operation != "NOT" && @operation != "RAD")
-        if restriction && (@y.nil?)  
-            abort("ERROR, Expected Number(s) for Operation:\t#{@operation}".red)
-        end
     end 
     
     # Use regular expressions to parse arguments passed.
-    def parse_args(arr = nil)
+    def parse_args()
         #exit if no args passed; parse flags only if needed
         usage() if ARGV.empty? 
         parse_flags if (ARGV[0][0] == "-")
         
-        # for using in a script
-        arr = ARGV if arr.nil?
-        
-        arr.each do |a|
+        ARGV.each do |a|
             case 
-            #if ARGV[a] is letters only,check if its a valid operation
+            #check if valid operation choice
             when (a == a[/[a-zA-Z]*/])
                 @ops.each do |ops_elem|
                     if (a.upcase == ops_elem)
@@ -144,10 +146,19 @@ class BoolCalc
     def parse_flags()
         flags = ARGV[0]
         flags.split("").each do |f|
-            usage() if f.upcase == "H" 
-            @no_color = true if f.upcase == "N"
+            case
+            when f == "n"
+                @options[:nocolor] = true
+            when f == "h"
+                usage
+            when f == "f"
+                @options[:bit4] = false
+            when f == "s"
+                @options[:bit64] = false
+            when f == "g"
+                @options[:grouped] = true
+            end
         end
-        String.disable_colorization = true if (@no_color)
     end
     # Simple way to check if our number is truly a number
     def is_number(num)
@@ -160,12 +171,19 @@ class BoolCalc
             A simple bitwise calculator that executes the operations noted below.
             It can accept Octal, Hexadecimal, Decimal, and Binary inputs.
             It will output in above mentioned radixes, binary output 
-            will have 32,64, and up to 128 bit format. The results are printed to
-            STDOUT.  
+            will have 32,64,128, and up to 256 bit format. The results are printed to
+            STDOUT. 
+            Note this was intended to be a command line interface tool only.
+
         Usage:
-            Any flags passed MUST come first.
-            Numbers, and operation order DOES NOT MATTER.
-            Binary operations WILL be parsed left to right.
+            Pass arguments to the program as shown below.
+            Note that binary output is spaced every 4 bits.
+            Every 64 bits, a newline is added for readability.
+            Colorized output is also enabled by default.
+            Of course you can disable these if you wish.
+            
+            For additional help/screenshots:
+            <https://github.com/vargash1/Bitwise-Calculator>
 
             Unary Operations:
                 bitwiseCalc <flag> <num> <operation>
@@ -177,11 +195,17 @@ class BoolCalc
                 <base_2_num>  = 0b[0-1]
                 <base_8_num>  = 0[0-7]
                 <base_16_num> = 0x[0-9a-f]
-        Flags: 
+        Flags:
+            -f
+                disables spacing every 4 bits in binary output 
+            -s
+                disables newline every 64 bits in binary output
             -n
-                disables colorized output(enabled by default)
+                disables colorized output
             -h
                 outputs usage and exits
+            -g 
+                outputs base 10 numbers in grouped form
         Operations:
             NOT 
                 Bitwise NOT, or complement of input.   
@@ -223,75 +247,75 @@ class BoolCalc
         exit
     end
     # Outputs number in Binary form for easier reading
-    # Plus it lets user see what is going on.
+    # Will print 64 bits before moving to the next line
     def print_nice_binary(num)
-        if num <= (2**31)
-            puts "\t32 Bit Format(MSB First)".yellow
-            print "\t"
-            31.downto(0) do |n| 
-                print num[n]
-                if (n%4 == 0); print " " end
-            end
-            puts
-        end
-        if num <= (2**63)
-            puts "\n\t64 Bit Format(MSB First)".yellow
-            print "\t"
-            63.downto(0) do |n|
-                print num[n]
-                print " " if (n%4 == 0) 
-            end
+        case
+        when num <= 2 ** 31
+            max = 31
+        when num <= 2 ** 63
+            max = 63
+        when num <= 2 ** 127
+            max = 127
         else
-            puts "\n\t128 Bit Format(MSB First)".yellow
-            print "\t"
-            127.downto(0) do |n|
-                print"\n\t" if (n == 63)
-                print num[n]
-                print " " if (n%4 == 0)
-            end
+            max = 255
         end
+        puts "\t#{max+1} Bit Format(MSB First)".yellow
+        print "\t"
+        max.downto(0) do |n|
+            case
+            when ((n+1)%64 == 0) && @options[:bit64]
+                print "\n\t" 
+            when ((n+1)%4 == 0) && @options[:bit4]
+                print " " 
+            end
+            print num[n]
+        end  
         puts
     end
     #Converts an integer to a binary array
-    def int_to_binary_arr()
-        @bit64_array_x = []
-        63.downto(0) do |n|
-            @bit64_array_x << @x[n]
+    def int_to_binarr(arr)
+        tmparr = []
+        255.downto(0) do |n|
+            tmparr << arr[n]
         end
+        tmparr
     end
     # Rotate right implementation 
-    def ror()
-        arr_tail = @bit64_array_x.length-2
+    def ror(tmparr)
+        arr_tail = tmparr.length-2
         for i in 1..@y
             #save least significant bit(end of array) 
-            lsb = @bit64_array_x[-1]
+            lsb = tmparr[-1]
             for j in 0..arr_tail
                 if j == 0
-                    tmp1 = @bit64_array_x[j+1]
-                    @bit64_array_x[j+1] = @bit64_array_x[j]
+                    tmp1 = tmparr[j+1]
+                    tmparr[j+1] = tmparr[j]
                 end
                 #save next element, make next element previously saved elem
-                tmp2 = @bit64_array_x[j+1]
-                @bit64_array_x[j+1] = tmp1
+                tmp2 = tmparr[j+1]
+                tmparr[j+1] = tmp1
                 tmp1 = tmp2  
             end
             #assign least significant bit(end of array) to head of array
-            @bit64_array_x[0] = lsb
+            tmparr[0] = lsb
         end
+        print tmparr.length
+        tmparr
     end
     # Rotate left implementation 
-    def rol()
-        arr_tail = @bit64_array_x.length-2
+    def rol(tmparr)
+        arr_tail = tmparr.length-2
         for i in 1..@y
             #save most significant bit(beginning of array)
-            msb = @bit64_array_x[0]
+            msb = tmparr[0]
             for j in 0..arr_tail
                 #assign next element in array to current element in array
-                @bit64_array_x[j] = @bit64_array_x[j+1]
+                tmparr[j] = tmparr[j+1]
             end
             #assign most significant bit to tail
-            @bit64_array_x[-1] = msb
-        end 
+            tmparr[-1] = msb
+        end
+        tmparr 
     end       
 end
 def main()
@@ -302,3 +326,4 @@ def main()
     runtime.print_results()
 end
 main()  
+
