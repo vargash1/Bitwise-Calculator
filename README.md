@@ -63,7 +63,7 @@ Passing numbers in a radix other than base10:
 Results will be output in Octal, Decimal, Hexadecimal, and Binary(MSB first).
 
 ###Bit Rotation
-Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift) However, since my program supports up to 256 bit numbers, then it you should carefully use ROL. ROL will rotate these numbers with respect to this. That means that if you ROL 1 by 1 will become 2^255. I will fix this in the next patch but I intend to completely break down this code and start from scratch! 
+Bit rotation isn't included by default with Ruby(unlike SHR, SHL, e.t.c).It is done using arrays of binary strings; my solution to this is based on the 2 diagrams at the bottom of [this page](https://en.wikipedia.org/wiki/Circular_shift) However, since my program supports up to 256 bit numbers, then it you should carefully use ROL. ROL will rotate these numbers with respect to this. That means that if you ROL 1 by 1 it will become 2^255. I will fix this in the next patch but I intend to completely break down this code and provide a more well structured solution.  
 
 ###Examples
 Here are some screengrabs that will provide a visual on what you are to expect and some clarification on instructions.
