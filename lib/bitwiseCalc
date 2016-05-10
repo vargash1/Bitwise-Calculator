@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last modified by:   vargash1
-# @Last modified time: Tuesday, May 10th 2016, 6:40:15 pm
+# @Last modified time: Tuesday, May 10th 2016, 7:18:13 pm
 require 'colorize'
 
 class BoolCalc
@@ -142,7 +142,7 @@ class BoolCalc
             when arg[/0[0-7]+/]
                 @x == nil ? @x = arg.to_i(8) : @y = arg.to_i(8)
             #decimal number
-        when arg[/^-?[0-9]+/]
+            when arg[/^-?[0-9]+/]
                 @x == nil ? @x = arg.to_i : @y = arg.to_i
             end
         end
