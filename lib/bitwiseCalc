@@ -4,95 +4,94 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last modified by:   vargash1
-# @Last modified time: Monday, May 9th 2016, 10:02:38 pm
+# @Last modified time: Tuesday, May 10th 2016, 2:45:15 pm
 require 'colorize'
+
 class BoolCalc
     def initialize()
         @x = nil; @y = nil; @ans = nil; @operation = nil
+
         # Valid Operations
-        @ops = ['NOT','SHR','SHL','AND','OR','XOR',
-                'RAD','ROL','ROR','MUL','DIV','ADD',
-                'SUB','MOD','POW','NOR','NAND','XNOR']
-        # Operation hash with a more verbose description
-        @ops2 = { 'NOT' => "Bitwise Not", 'SHR' => "Shift Right",
-            'SHL' => "Shift Left", 'AND' => "Logical And",
-            'OR' => "Logical Or", 'XOR' => "Exclusive Or",
-            'RAD' => "Display Radixes", 'ROL' => "Circular Rotate Left",
-            'ROR' => "Circular Rotate Right",'MUL' => "Multiply",
-            'DIV' => " Division", 'ADD' => "Addition",
-            'SUB' => "Subtraction", 'MOD' => "Modulus",
-            'POW' => "Exponentiation",'NOR' => "Negated OR",
-            'NAND' => "Negated AND", 'XNOR' => "Complement XOR"}
+        @ops = { :NOT => "Bitwise Not", :SHR => "Shift Right",
+                 :SHL => "Shift Left", :AND => "Logical And",
+                 :OR => "Logical Or", :XOR => "Exclusive Or",
+                 :RAD => "Display Radixes", :ROL => "Circular Rotate Left",
+                 :ROR => "Circular Rotate Right", :MUL => "Multiply",
+                 :DIV => " Division", :ADD => "Addition",
+                 :SUB => "Subtraction", :MOD => "Modulus",
+                 :POW => "Exponentiation", :NOR => "Negated OR",
+                 :NAND => "Negated AND", :XNOR => "Complement XOR"}
+
         # Option Hash
-        @options = { nocolor:false, grouped: false, bit4: true,
+        @options = { nocolor: false, grouped: false, bit4: true,
                      bit64: true, ipnum: false, nargs: false }
     end
+
     # Outputs num in radixes mentioned in program description.
     def print_all_radix(num)
-        num_base10 = num.to_s(10)
-
-        num.to_s(10).reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse! if @options[:grouped]
+        base10 = num.to_s(10)
+        base10 = base10.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse! if @options[:grouped]
         print "Base 2:\n".yellow
         print_nice_binary(num)
         print "Base 8: \t".yellow; print "#{num.to_s(8)}\n"
-        print "Base 10:\t".yellow; print "#{num_base10}\n"
+        print "Base 10:\t".yellow; print "#{base10}\n"
         print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
     end
+
     # Executes desired operation.
     def execute()
-        case
-        when(@operation == 'RAD')
+        case @operation
+        when 'RAD'
             return
-        when (@operation == 'AND')
+        when 'AND'
             @ans = @x & @y
-        when (@operation == 'NAND')
+        when 'NAND'
             @ans = ~(@x & @y)
-        when (@operation == 'OR')
+        when 'OR'
             @ans = @x | @y
-        when (@operation == 'NOR')
+        when 'NOR'
             @ans = ~(@x | @y)
-        when (@operation == 'XOR')
+        when 'XOR'
             @ans = @x ^ @y
-        when (@operation == 'XNOR')
+        when 'XNOR'
             @ans = ~(@x ^ @y)
-        when (@operation == 'NOT')
+        when 'NOT'
             @ans = ~@x
-        when (@operation == 'SHR')
+        when 'SHR'
             @ans = @x >> @y
-        when (@operation == 'SHL')
+        when 'SHL'
             @ans = @x << @y
-        when (@operation == 'ROL')
+        when 'ROL'
             binarr = int_to_binarr(@x)
-            binarr = rol(binarr)
-            @ans = binarr.join.to_i(2)
-        when(@operation == 'ROR')
+            @ans = rol(binarr).join.to_i(2)
+        when 'ROR'
             binarr = int_to_binarr(@x)
-            binarr = ror(binarr)
-            @ans = (binarr.join).to_i(2)
-        when(@operation == 'MUL')
+            @ans = ror(binarr).join.to_i(2)
+        when 'MUL'
             @ans = @x * @y
-        when(@operation == 'ADD')
+        when 'ADD'
             @ans = @x + @y
-        when(@operation == 'DIV')
+        when 'DIV'
             @ans = @x / @y
-        when(@operation == 'SUB')
+        when 'SUB'
             @ans = @x - @y
-        when(@operation == 'MOD')
+        when 'MOD'
             @ans = @x % @y
-        when(@operation == 'POW')
+        when 'POW'
             @ans = @x ** @y
         end
     end
+
     # Neatly displays results
     def print_results()
         String.disable_colorization = true if (@options[:nocolor])
-        seperator = "\t---------------------------------------\n"
-        print seperator.green
+        separator = "\t---------------------------------------\n"
+        print separator.green
         print_all_radix(@x)
 
         # print 2 passed num only if
         if @y != nil && @operation != "NOT"
-            puts seperator.green
+            puts separator.green
             print_all_radix(@y)
         end
 
@@ -121,131 +120,113 @@ class BoolCalc
         end
     end
 
-    # Use regular expressions to parse arguments passed.
+    # Parse arguments passed.
     def parse_args()
         #exit if no args passed; parse flags only if needed
         usage() if ARGV.empty?
         parse_flags if (ARGV[0][0] == "-")
 
-        ARGV.each do |a|
-            case
+        ARGV.each do |arg|
+
+            case arg
             #check if valid operation choice
-            when (a == a[/[a-zA-Z]*/])
-                @ops.each do |ops_elem|
-                    if (a.upcase == ops_elem)
-                        @operation = ops_elem
-                    end
-                end
-            #hex val was read
-            when(a == a[/0[xX][0-9a-fA-F]+/])
-                if (@x == nil) ? @x = a.to_i(16): @y = a.to_i(16)
-                end
-            #binary val was read
-            when(a == a[/0[bB][0-1]+/])
-                if (@x == nil) ? @x = a.to_i(2): @y = a.to_i(2)
-                end
-            #octal val was read
-            when(a == a[/0[0-7]+/])
-                if (@x == nil) ? @x = a.to_i(8): @y = a.to_i(8)
-                end
-            #decimal val was read
-            when (is_number(a))
-                if (@x == nil) ? @x = a.to_i: @y = a.to_i
-                end
+            when arg[/[a-zA-Z]+/]
+                @operation = arg.upcase if @ops.has_key?(arg.upcase.to_sym)
+            #hex number
+            when arg[/0[xX][0-9a-fA-F]+/]
+                @x == nil ? @x = arg.to_i(16) : @y = arg.to_i(16)
+            #binary number
+            when arg[/0[bB][0-1]+/]
+                @x == nil ? @x = arg.to_i(2) : @y = arg.to_i(2)
+            #octal number
+            when arg[/0[0-7]+/]
+                @x == nil ? @x = arg.to_i(8) : @y = arg.to_i(8)
+            #decimal number
+            when arg[/[0-9]+/]
+                @x == nil ? @x = arg.to_i : @y = arg.to_i
             end
         end
     end
     # Parses flags, only called if flags passed are detected.
     def parse_flags()
         flags = ARGV[0]
-        flags.split("").each do |f|
-            case
-            when f == "n"
+        flags.split("").each do |flag|
+            case flag
+            when "n"
                 @options[:nocolor] = true
-            when f == "h"
+            when "h"
                 usage
-            when f == "f"
+            when "f"
                 @options[:bit4] = false
-            when f == "s"
+            when "s"
                 @options[:bit64] = false
-            when f == "g"
+            when "g"
                 @options[:grouped] = true
             end
         end
     end
-    # Simple way to check if our number is truly a number
-    def is_number(num)
-        is_num = ((num.to_f.to_s == num.to_s) || (num.to_i.to_s == num.to_s))
-        is_num
-    end
+
     def usage()
         puts """
         Description:
             A simple bitwise calculator that executes the operations noted below.
             It can accept Octal, Hexadecimal, Decimal, and Binary inputs.
-            It will output in above mentioned radixes, binary output
-            will have 32,64,128, and up to 256 bit format. The results are printed to
-            STDOUT.
-            Note this was intended to be a command line interface tool only.
-
+            It will output in above mentioned radixes.
+            Binary output will have 32, 64, 128, and up to 256 bit format.
+            The results are printed to the console.
         Usage:
-            Pass arguments to the program as shown below.
-            Note that binary output is spaced every 4 bits.
-            Every 64 bits, a newline is added for readability.
-            Colorized output is also enabled by default.
-            Of course you can disable these if you wish.
-
-            For additional help/screenshots:
-            <https://github.com/vargash1/Bitwise-Calculator>
+            Pass arguments to the program as shown below. Note that binary output
+            is spaced every 4 bits. Every 64 bits, a newline is added for readability.
+            For additional help/examples:
+                https://github.com/vargash1/Bitwise-Calculator
 
             Unary Operations:
-                bitwiseCalc <flag> <num> <operation>
+                bitwiseCalc [flag] <number> <operation>
 
             Binary Operations:
-                bitwiseCalc <flag> <num> <operation> <num>
+                bitwiseCalc [flag] <number> <operation> <number>
 
             Passing a number in a radix other than base10:
-                <base_2_num>  = 0b[0-1]
-                <base_8_num>  = 0[0-7]
-                <base_16_num> = 0x[0-9a-f]
+                <base_2_number>  = 0b[0-1]
+                <base_8_number>  = 0[0-7]
+                <base_16_number> = 0x[0-9a-f]
         Flags:
             -f
-                disables spacing every 4 bits in binary output
+                disables spacing every 4 bits in binary output(enabled by default)
             -s
-                disables newline every 64 bits in binary output
+                disables newline every 64 bits in binary output(enabled by default)
             -n
-                disables colorized output
+                disables colorized output(enabled by default)
             -h
-                outputs usage and exits
+                displays this message and exits
             -g
-                outputs base 10 numbers in grouped form
+                outputs base 10 numbers in grouped form(with commas)
         Operations:"""
-        @ops2.each_pair do |k,v|
-            puts "\t #{k}\n\t\t#{v}"
+        @ops.each_pair do |key,val|
+            puts "\t #{key}\n\t\t#{val}"
         end
         exit
     end
+
     # Outputs number in Binary form for easier reading
+    # Will print in increments of 32,64,128, and then 256
     # Will print 64 bits before moving to the next line
     def print_nice_binary(num)
-        case
-        when num <= 2 ** 31
+        if num <= 2 ** 31
             max = 31
-        when num <= 2 ** 63
+        elsif num <= 2 ** 63
             max = 63
-        when num <= 2 ** 127
+        elsif num <= 2 ** 127
             max = 127
         else
             max = 255
         end
         puts "\t#{max+1} Bit Format(MSB First)".yellow
         print "\t"
-        # ugly but formats output nicely
         max.downto(0) do |n|
-            case
-            when ((n+1)%64 == 0) && @options[:bit64]
-                print "\n\t"
-            when ((n+1)%4 == 0) && @options[:bit4]
+            if (n+1)%64 == 0 && @options[:bit64]
+                    print "\n\t"
+            elsif (n+1)%4 == 0 && @options[:bit4]
                 print " "
             end
             print num[n]
@@ -279,7 +260,6 @@ class BoolCalc
             #assign least significant bit(end of array) to head of array
             tmparr[0] = lsb
         end
-        print tmparr.length
         tmparr
     end
     # Rotate left implementation
