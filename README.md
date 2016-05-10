@@ -3,7 +3,7 @@
 @Date:   Saturday, January 9th 2016, 7:32:23 pm
 @Email:  vargash1@wit.edu
 @Last modified by:   vargash1
-@Last modified time: Tuesday, May 10th 2016, 3:32:41 pm
+@Last modified time: Tuesday, May 10th 2016, 3:35:06 pm
 -->
 
 #bitwiseCalc [![Gem Version](https://badge.fury.io/rb/bitwiseCalc.svg)](http://badge.fury.io/rb/bitwiseCalc)
@@ -13,6 +13,7 @@ This project will soon be replaced by a much more organized version, but I didn'
 ##All operations
 
 ###Bitwise Operations
+|      |                   |
 | :--: | :---------------  |
 | SHL  | Shift Left        |
 | SHR  | Shift Right       |
@@ -27,6 +28,7 @@ This project will soon be replaced by a much more organized version, but I didn'
 | ROL  | Rotate Left       |
 
 ###Arithmetic Operations
+|      |                   |
 | :--: | :---------------  |
 | ADD  | Addition          |
 | SUB  | Subtraction       |
@@ -36,6 +38,7 @@ This project will soon be replaced by a much more organized version, but I didn'
 | POW  | Exponentiation    |
 
 ###Misc. Operations
+|      |                   |
 | :--: | :---------------  |
 | RAD  | Display input in mentioned radices |
 
