@@ -3,7 +3,7 @@
 @Date:   Saturday, January 9th 2016, 7:32:23 pm
 @Email:  vargash1@wit.edu
 @Last modified by:   vargash1
-@Last modified time: Tuesday, May 10th 2016, 3:35:06 pm
+@Last modified time: Tuesday, May 10th 2016, 6:01:54 pm
 -->
 
 #bitwiseCalc [![Gem Version](https://badge.fury.io/rb/bitwiseCalc.svg)](http://badge.fury.io/rb/bitwiseCalc)
@@ -13,6 +13,8 @@ This project will soon be replaced by a much more organized version, but I didn'
 ##All operations
 
 ###Bitwise Operations
+These operations must have binary arguments. With the exception or NOT(unary).
+The NOT operation will only consider the first number argument passed.
 |      |                   |
 | :--: | :---------------  |
 | SHL  | Shift Left        |
@@ -28,6 +30,7 @@ This project will soon be replaced by a much more organized version, but I didn'
 | ROL  | Rotate Left       |
 
 ###Arithmetic Operations
+These operations must have binary arguments.
 |      |                   |
 | :--: | :---------------  |
 | ADD  | Addition          |
@@ -38,6 +41,7 @@ This project will soon be replaced by a much more organized version, but I didn'
 | POW  | Exponentiation    |
 
 ###Misc. Operations
+This operation can be used either with unary arguments, or with binary arguments.
 |      |                   |
 | :--: | :---------------  |
 | RAD  | Display input in mentioned radices |
@@ -52,28 +56,30 @@ Numbers passed as arguments can be passed in binary, hex, octal, and decimal.
 Note numbers passed incorrectly WILL NOT be used.
 Passing numbers in a radix other than base10:
 
-* binary number = 0b[0-1]
-* octal number  = 0[0-7]
-* hex number    = 0x[0-9a-f]
+| Radix         | How to pass |
+| :-----        | :------     |
+| binary number | 0b[0-1]     |
+| octal number  | 0[0-7]      |
+| hex number    | 0x[0-9a-f]  |
 
 ```bash
 	#binary input operations
-	bitwiseCalc <flags> <num1> <operation> <num2>
+	bitwiseCalc [flag] number operation number
 
 	#unary input operations
-	bitwiseCalc <flags> <operation> <num>
+	bitwiseCalc [flag] number operation
 
 	#Flags
-      		-f
-                disables spacing every 4 bits in binary output
-            -s
-                disables newline every 64 bits in binary output
-            -n
-                disables colorized output
-            -h
-                outputs usage and exits
-            -g
-                outputs base 10 numbers in grouped form
+      	-f
+            disables spacing every 4 bits in binary output(enabled by default)
+        -s
+            disables newline every 64 bits in binary output(enabled by default)
+        -n
+            disables colorized output(enabled by default)
+        -h
+            outputs usage and exits
+        -g
+            outputs base 10 numbers in grouped form(disabled by default)
 ```
 
 Results will be output in Octal, Decimal, Hexadecimal, and Binary(MSB first).

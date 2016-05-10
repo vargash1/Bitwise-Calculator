@@ -4,7 +4,7 @@
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
 # @Last modified by:   vargash1
-# @Last modified time: Tuesday, May 10th 2016, 2:45:15 pm
+# @Last modified time: Tuesday, May 10th 2016, 5:19:18 pm
 require 'colorize'
 
 class BoolCalc
@@ -33,9 +33,9 @@ class BoolCalc
         base10 = base10.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse! if @options[:grouped]
         print "Base 2:\n".yellow
         print_nice_binary(num)
-        print "Base 8: \t".yellow; print "#{num.to_s(8)}\n"
-        print "Base 10:\t".yellow; print "#{base10}\n"
-        print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
+        puts "Base 8: ".yellow; puts "\t#{num.to_s(8)}"
+        puts "Base 10:".yellow; puts "\t#{base10}"
+        puts "Base 16:".yellow; puts "\t#{num.to_s(16)}"
     end
 
     # Executes desired operation.
@@ -84,7 +84,7 @@ class BoolCalc
 
     # Neatly displays results
     def print_results()
-        String.disable_colorization = true if (@options[:nocolor])
+        String.disable_colorization = true if @options[:nocolor]
         separator = "\t---------------------------------------\n"
         print separator.green
         print_all_radix(@x)
@@ -105,10 +105,10 @@ class BoolCalc
     # Detect any errors before operation execution
     def check_for_errors()
         # no operation read
-        abort("ERROR, Expected Operation".red) if (@operation.nil?)
+        abort("ERROR, Expected Operation".red) if @operation.nil?
 
         # make sure binary operations have binary input
-        restriction = (@operation != "NOT" && @operation != "RAD") && @y.nil?
+        restriction = @operation != "NOT" && @operation != "RAD" && @y.nil?
         # also make sure we have read at least 1 number
         if restriction || @x.nil?
             abort("ERROR, Expected Number(s) for Operation:\t#{@operation}".red)
@@ -123,8 +123,8 @@ class BoolCalc
     # Parse arguments passed.
     def parse_args()
         #exit if no args passed; parse flags only if needed
-        usage() if ARGV.empty?
-        parse_flags if (ARGV[0][0] == "-")
+        usage if ARGV.empty?
+        parse_flags if ARGV[0][0] == "-"
 
         ARGV.each do |arg|
 
