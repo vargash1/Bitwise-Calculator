@@ -3,46 +3,56 @@
 # @Name:   Vargas, Hector
 # @Email:  vargash1@wit.edu
 # @Date:   2015-02-23 10:23:20
-# @Last Modified by:   Hector Vargas
-# @Last Modified time: 2016-01-09 19:20:07
+# @Last modified by:   vargash1
+# @Last modified time: Monday, May 9th 2016, 10:02:38 pm
 require 'colorize'
 class BoolCalc
     def initialize()
         @x = nil; @y = nil; @ans = nil; @operation = nil
-        # Valid Operations 
+        # Valid Operations
         @ops = ['NOT','SHR','SHL','AND','OR','XOR',
                 'RAD','ROL','ROR','MUL','DIV','ADD',
                 'SUB','MOD','POW','NOR','NAND','XNOR']
+        # Operation hash with a more verbose description
+        @ops2 = { 'NOT' => "Bitwise Not", 'SHR' => "Shift Right",
+            'SHL' => "Shift Left", 'AND' => "Logical And",
+            'OR' => "Logical Or", 'XOR' => "Exclusive Or",
+            'RAD' => "Display Radixes", 'ROL' => "Circular Rotate Left",
+            'ROR' => "Circular Rotate Right",'MUL' => "Multiply",
+            'DIV' => " Division", 'ADD' => "Addition",
+            'SUB' => "Subtraction", 'MOD' => "Modulus",
+            'POW' => "Exponentiation",'NOR' => "Negated OR",
+            'NAND' => "Negated AND", 'XNOR' => "Complement XOR"}
         # Option Hash
-        @options = {nocolor:false, grouped: false, bit4: true, bit64: true}
+        @options = { nocolor:false, grouped: false, bit4: true,
+                     bit64: true, ipnum: false, nargs: false }
     end
     # Outputs num in radixes mentioned in program description.
     def print_all_radix(num)
         num_base10 = num.to_s(10)
-        if @options[:grouped]
-            num_base10 = num.to_s(10).reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
-        end
-        print "Base 10:\t".yellow; print "#{num_base10}\n"
-        print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
-        print "Base 8: \t".yellow; print "#{num.to_s(8)}\n"
+
+        num.to_s(10).reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse! if @options[:grouped]
         print "Base 2:\n".yellow
         print_nice_binary(num)
+        print "Base 8: \t".yellow; print "#{num.to_s(8)}\n"
+        print "Base 10:\t".yellow; print "#{num_base10}\n"
+        print "Base 16:\t".yellow; print "#{num.to_s(16)}\n"
     end
     # Executes desired operation.
     def execute()
-        case 
+        case
         when(@operation == 'RAD')
             return
         when (@operation == 'AND')
             @ans = @x & @y
         when (@operation == 'NAND')
-            @ans = ~(@x & @y) 
+            @ans = ~(@x & @y)
         when (@operation == 'OR')
             @ans = @x | @y
         when (@operation == 'NOR')
             @ans = ~(@x | @y)
         when (@operation == 'XOR')
-            @ans = @x ^ @y 
+            @ans = @x ^ @y
         when (@operation == 'XNOR')
             @ans = ~(@x ^ @y)
         when (@operation == 'NOT')
@@ -76,46 +86,49 @@ class BoolCalc
     # Neatly displays results
     def print_results()
         String.disable_colorization = true if (@options[:nocolor])
-        
-        print "\t---------------------------------------\n".green
+        seperator = "\t---------------------------------------\n"
+        print seperator.green
         print_all_radix(@x)
-        if (@y != nil && @operation != "NOT")
-            puts "\t---------------------------------------\n".green
+
+        # print 2 passed num only if
+        if @y != nil && @operation != "NOT"
+            puts seperator.green
             print_all_radix(@y)
         end
+
         # rad simply outputs num(s) in multiple radixes
-        if (@operation != "RAD")
+        if @operation != "RAD"
             puts "\n\t-------------#{@operation} Result-----------------".green
             print_all_radix(@ans)
-        end    
+        end
     end
-    
+
     # Detect any errors before operation execution
     def check_for_errors()
-        # no op read
+        # no operation read
         abort("ERROR, Expected Operation".red) if (@operation.nil?)
-        
-        # make sure binary ops have binary input 
-        restriction = ((@operation != "NOT" && @operation != "RAD") &&@y.nil?)
+
+        # make sure binary operations have binary input
+        restriction = (@operation != "NOT" && @operation != "RAD") && @y.nil?
         # also make sure we have read at least 1 number
-        if restriction || @x.nil?   
+        if restriction || @x.nil?
             abort("ERROR, Expected Number(s) for Operation:\t#{@operation}".red)
         end
-            
+
         # div by zero
-        if ((@operation == "DIV" || @operation == "MOD") && (@y == 0))
+        if (@operation == "DIV" || @operation == "MOD") && @y == 0
             abort("ERROR, Divide by 0 for Operation:\t#{@operation}".red)
-        end 
-    end 
-    
+        end
+    end
+
     # Use regular expressions to parse arguments passed.
     def parse_args()
         #exit if no args passed; parse flags only if needed
-        usage() if ARGV.empty? 
+        usage() if ARGV.empty?
         parse_flags if (ARGV[0][0] == "-")
-        
+
         ARGV.each do |a|
-            case 
+            case
             #check if valid operation choice
             when (a == a[/[a-zA-Z]*/])
                 @ops.each do |ops_elem|
@@ -163,16 +176,16 @@ class BoolCalc
     # Simple way to check if our number is truly a number
     def is_number(num)
         is_num = ((num.to_f.to_s == num.to_s) || (num.to_i.to_s == num.to_s))
-        return is_num
+        is_num
     end
     def usage()
         puts """
         Description:
             A simple bitwise calculator that executes the operations noted below.
             It can accept Octal, Hexadecimal, Decimal, and Binary inputs.
-            It will output in above mentioned radixes, binary output 
+            It will output in above mentioned radixes, binary output
             will have 32,64,128, and up to 256 bit format. The results are printed to
-            STDOUT. 
+            STDOUT.
             Note this was intended to be a command line interface tool only.
 
         Usage:
@@ -181,69 +194,35 @@ class BoolCalc
             Every 64 bits, a newline is added for readability.
             Colorized output is also enabled by default.
             Of course you can disable these if you wish.
-            
+
             For additional help/screenshots:
             <https://github.com/vargash1/Bitwise-Calculator>
 
             Unary Operations:
                 bitwiseCalc <flag> <num> <operation>
-            
+
             Binary Operations:
                 bitwiseCalc <flag> <num> <operation> <num>
-            
+
             Passing a number in a radix other than base10:
                 <base_2_num>  = 0b[0-1]
                 <base_8_num>  = 0[0-7]
                 <base_16_num> = 0x[0-9a-f]
         Flags:
             -f
-                disables spacing every 4 bits in binary output 
+                disables spacing every 4 bits in binary output
             -s
                 disables newline every 64 bits in binary output
             -n
                 disables colorized output
             -h
                 outputs usage and exits
-            -g 
+            -g
                 outputs base 10 numbers in grouped form
-        Operations:
-            NOT 
-                Bitwise NOT, or complement of input.   
-            RAD    
-                Diplays Input(s) in metioned radixes.   
-            AND              
-                Logical AND. 
-            NAND 
-                Negative AND.   
-            OR 
-                Logical inclusive OR.
-            NOR
-                Negative OR.
-            XOR 
-                Logical exclusive OR. 
-            XNOR
-                Logical complement of XOR. 
-            SHR 
-                Right logical shift. 
-            SHL 
-                Left logical shift.
-            ROR  
-                Right circular rotate.       
-            ROL 
-                Left circular rotate.   
-            MUL 
-                Multiplication.
-            DIV 
-                Division.
-            ADD  
-                Addition.
-            SUB  
-                Subtraction.
-            MOD  
-                Modulus.
-            POW
-                Exponentiation.
-            """
+        Operations:"""
+        @ops2.each_pair do |k,v|
+            puts "\t #{k}\n\t\t#{v}"
+        end
         exit
     end
     # Outputs number in Binary form for easier reading
@@ -261,15 +240,16 @@ class BoolCalc
         end
         puts "\t#{max+1} Bit Format(MSB First)".yellow
         print "\t"
+        # ugly but formats output nicely
         max.downto(0) do |n|
             case
             when ((n+1)%64 == 0) && @options[:bit64]
-                print "\n\t" 
+                print "\n\t"
             when ((n+1)%4 == 0) && @options[:bit4]
-                print " " 
+                print " "
             end
             print num[n]
-        end  
+        end
         puts
     end
     #Converts an integer to a binary array
@@ -280,11 +260,11 @@ class BoolCalc
         end
         tmparr
     end
-    # Rotate right implementation 
+    # Rotate right implementation
     def ror(tmparr)
         arr_tail = tmparr.length-2
         for i in 1..@y
-            #save least significant bit(end of array) 
+            #save least significant bit(end of array)
             lsb = tmparr[-1]
             for j in 0..arr_tail
                 if j == 0
@@ -294,7 +274,7 @@ class BoolCalc
                 #save next element, make next element previously saved elem
                 tmp2 = tmparr[j+1]
                 tmparr[j+1] = tmp1
-                tmp1 = tmp2  
+                tmp1 = tmp2
             end
             #assign least significant bit(end of array) to head of array
             tmparr[0] = lsb
@@ -302,7 +282,7 @@ class BoolCalc
         print tmparr.length
         tmparr
     end
-    # Rotate left implementation 
+    # Rotate left implementation
     def rol(tmparr)
         arr_tail = tmparr.length-2
         for i in 1..@y
@@ -315,8 +295,8 @@ class BoolCalc
             #assign most significant bit to tail
             tmparr[-1] = msb
         end
-        tmparr 
-    end       
+        tmparr
+    end
 end
 def main()
     runtime = BoolCalc.new()
@@ -325,5 +305,4 @@ def main()
     runtime.execute()
     runtime.print_results()
 end
-main()  
-
+main()
