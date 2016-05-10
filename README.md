@@ -3,7 +3,7 @@
 @Date:   Saturday, January 9th 2016, 7:32:23 pm
 @Email:  vargash1@wit.edu
 @Last modified by:   vargash1
-@Last modified time: Tuesday, May 10th 2016, 6:01:54 pm
+@Last modified time: Tuesday, May 10th 2016, 6:04:03 pm
 -->
 
 #bitwiseCalc [![Gem Version](https://badge.fury.io/rb/bitwiseCalc.svg)](http://badge.fury.io/rb/bitwiseCalc)
@@ -15,6 +15,7 @@ This project will soon be replaced by a much more organized version, but I didn'
 ###Bitwise Operations
 These operations must have binary arguments. With the exception or NOT(unary).
 The NOT operation will only consider the first number argument passed.
+
 |      |                   |
 | :--: | :---------------  |
 | SHL  | Shift Left        |
@@ -31,6 +32,7 @@ The NOT operation will only consider the first number argument passed.
 
 ###Arithmetic Operations
 These operations must have binary arguments.
+
 |      |                   |
 | :--: | :---------------  |
 | ADD  | Addition          |
@@ -42,6 +44,7 @@ These operations must have binary arguments.
 
 ###Misc. Operations
 This operation can be used either with unary arguments, or with binary arguments.
+
 |      |                   |
 | :--: | :---------------  |
 | RAD  | Display input in mentioned radices |
