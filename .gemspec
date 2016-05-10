@@ -2,11 +2,11 @@
 # @Date:   Saturday, January 9th 2016, 7:11:52 pm
 # @Email:  vargash1@wit.edu
 # @Last modified by:   vargash1
-# @Last modified time: Tuesday, May 10th 2016, 2:49:58 pm
+# @Last modified time: Tuesday, May 10th 2016, 6:51:02 pm
 
 Gem::Specification.new do |s|
     s.name        = 'bitwiseCalc'
-    s.version     = '1.6.0'
+    s.version     = '1.6.1'
     s.date        = '2016-05-10'
     s.summary     = "BitWise Calculator CLI tool"
     s.description = "A simple CLI  BitWise Calculator that can peform arithmetic"
